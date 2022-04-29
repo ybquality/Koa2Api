@@ -2,6 +2,7 @@
 
 const Router = require('koa-router');
 
+const { uservalidator,verifyUser } = require('../middleware/user.middleware');//定义的中间件
 const { register,login } = require('../controller/user.controller');
 
 const router = new Router({prefix: '/users'});
@@ -11,7 +12,8 @@ const router = new Router({prefix: '/users'});
  * @desc 注册接口
  * @access 公开
  */
-router.post('/register',register)
+//用户访问该接口，先交由中间件验证，验证通过后在进入控制器
+router.post('/register',uservalidator,verifyUser,register)
 
 /**
  * @route POST /users/login
