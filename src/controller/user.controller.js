@@ -77,6 +77,11 @@ class UserController {
             ctx.body = {message:'修改用户名失败'}
         }
     }
+
+    //头像上传
+    async updateAvatar(ctx, next){
+        ctx.body = {message:'头像上传成功'}
+    }
 }
 
 //导出
