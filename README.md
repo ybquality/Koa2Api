@@ -2,7 +2,7 @@
 
 Node.js + Koa2 + MySQL
 ## 接口前缀
-`` http://localhost:5000/api/v1
+用户相关接口 http://localhost:5000/users
 
 目录结构
 
