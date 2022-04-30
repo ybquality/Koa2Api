@@ -1,6 +1,6 @@
 //用户控制器；处理不同业务
 const jwt = require('jsonwebtoken')
-const { createUser, getUerInfo } =require('../service/user.service')
+const { createUser, getUerInfo, updateById } =require('../service/user.service')
 
 const { JWT_SECRET } = require('../config/config.default')
 class UserController {
@@ -48,6 +48,34 @@ class UserController {
             console.error('用户登录失败',err)
         }
 
+    }
+
+    async changePassword(ctx, next){
+        // 1.获取数据
+        const id = ctx.state.user.id
+        const password = ctx.request.body.password
+        // console.log(id,password);
+        // 2.操作数据库
+        //这里就是根据updateById方法给我们返回的结果来判断
+        //如果是true
+        if (await updateById({id,password})){
+            ctx.status = 200,
+            ctx.body = {message:'修改密码成功'}
+        }else{
+            ctx.body = {message:'修改密码失败'}
+        }
+        // 3.返回结果
+    }
+
+    async changeUsername(ctx, next){
+        const id = ctx.state.user.id
+        const user_name = ctx.request.body.user_name
+        if (await updateById({id,user_name})){
+            ctx.status = 200,
+            ctx.body = {message:'修改用户名成功'}
+        }else{
+            ctx.body = {message:'修改用户名失败'}
+        }
     }
 }
 

@@ -18,21 +18,12 @@ const uservalidator = async (ctx, next) => {
     await next()
 }
 
+//邮箱检测
 const verifyUser = async (ctx, next) => {
-    const { email,user_name } = ctx.request.body
-    //验证数据合理性
-    // if(await getUerInfo({ email })){
-    //     console.error('出现邮箱重复注册',ctx.request.body)
-    //     ctx.status = 409,
-    //     ctx.body = {
-    //         message: '该邮箱已被注册',
-    //         return: '',
-    //     }
-    //     return
-    // }
+    const { email } = ctx.request.body
     try {
         const res = await getUerInfo({email})
-        const res2 = await getUerInfo({user_name})
+        // const res2 = await getUerInfo({user_name})
         //如果res不为空
         if(res){
             console.error('邮箱出现重复注册错误',{email})
@@ -43,11 +34,36 @@ const verifyUser = async (ctx, next) => {
             }
             return
         }
-        if(res2){
-            console.error('用户名出现重复注册错误',{user_name})
+        // if(res2){
+        //     console.error('用户名出现重复注册错误',{user_name})
+        //     ctx.status = 409,
+        //     ctx.body = {
+        //         message: '该昵称已被注册',
+        //         return: '',
+        //     }
+        //     return
+        // }
+    } catch (err) {
+         console.error('获取用户信息错误',err);
+         ctx.status = 500,
+         ctx.body = {message:'用户信息验证失败'}
+         return
+    }
+    await next()
+}
+
+//昵称检测
+const verifyUserName = async (ctx, next) => {
+    const { user_name } = ctx.request.body
+    try {
+        const res = await getUerInfo({user_name})
+        // const res2 = await getUerInfo({user_name})
+        //如果res不为空
+        if(res){
+            console.error('用户名重复',{user_name})
             ctx.status = 409,
             ctx.body = {
-                message: '该昵称已被注册',
+                message: '该用户名已被使用',
                 return: '',
             }
             return
@@ -65,9 +81,9 @@ const verifyUser = async (ctx, next) => {
 const cryptPassword = async (ctx, next) => {
     const {password} = ctx.request.body
 
-    const salt = bcrypt.genSaltSync(10);
+    const salt = bcrypt.genSaltSync(10)
     // hash保存的经过加密的密码
-    const hash = bcrypt.hashSync(password, salt);
+    const hash = bcrypt.hashSync(password, salt)
 
     ctx.request.body.password = hash
     await next()
@@ -75,7 +91,7 @@ const cryptPassword = async (ctx, next) => {
 
 //登录验证
 const verifyLogin = async (ctx, next) => {
-    const {email,password} = ctx.request.body
+    const {email, password} = ctx.request.body
     //监测是否为空
     if(!email || !password){
         console.error('登录信息存在空值错误',ctx.request.body)
@@ -109,7 +125,7 @@ const verifyLogin = async (ctx, next) => {
     }
     
     // 2.进行密码比对，将传过来的密码和数据库密码匹配
-    if (!bcrypt.compareSync(password,res.password)){
+    if (!bcrypt.compareSync(password, res.password)){
         console.error('用户登录密码错误',res.user_name,{password});
         ctx.status = 401,
         ctx.body = {
@@ -125,6 +141,7 @@ const verifyLogin = async (ctx, next) => {
 module.exports = {
     uservalidator,
     verifyUser,
+    verifyUserName,
     cryptPassword,
     verifyLogin
 }
