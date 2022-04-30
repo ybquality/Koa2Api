@@ -1,4 +1,6 @@
 //用户信息验证中间件
+const bcrypt = require('bcryptjs')//第三方加密模块
+
 const { getUerInfo } =require('../service/user.service')
 
 const uservalidator = async (ctx, next) => {
@@ -49,8 +51,21 @@ const verifyUser = async (ctx, next) => {
     await next()
 }
 
+//使用bcrypt封装的密码加密中间件
+const cryptPassword = async (ctx, next) => {
+    const {password} = ctx.request.body
+
+    const salt = bcrypt.genSaltSync(10);
+    // hash保存的经过加密的密码
+    const hash = bcrypt.hashSync(password, salt);
+
+    ctx.request.body.password = hash
+    await next()
+}
+
 
 module.exports = {
     uservalidator,
     verifyUser,
+    cryptPassword,
 }
