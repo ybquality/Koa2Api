@@ -1,6 +1,8 @@
 //用户控制器；处理不同业务
+const jwt = require('jsonwebtoken')
+const { createUser, getUerInfo } =require('../service/user.service')
 
-const { createUser } =require('../service/user.service')
+const { JWT_SECRET } = require('../config/config.default')
 class UserController {
     async register(ctx, next){
         // 1.获取数据
@@ -27,7 +29,25 @@ class UserController {
     };
 
     async login(ctx, next){
-        ctx.body = '登录成功'
+        //登录成功后，给用户颁发一个令牌token
+        const {email} = ctx.request.body   
+
+        // 1.获取用户信息(在token的payload中，记录id,email,user_name,is_admin)
+        try {
+            //剔除res中的password，然后将剩余的内容放入res里
+            const {password, ...res} = await getUerInfo({email})
+            ctx.status = 200,
+            ctx.body = {
+                message: '登录成功',
+                result: {
+                    //token携带的参数 传递的payload，密钥，过期时间
+                    token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
+                }
+            }
+        } catch (err) {
+            console.error('用户登录失败',err)
+        }
+
     }
 }
 
