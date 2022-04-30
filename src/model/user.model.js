@@ -23,6 +23,12 @@ const User = seq.define('INUS_user',{
         allowNull: false,
         comment: '用户密码，不允许为空'
     },
+    avatar: {
+        type: DataTypes.STRING,//字段类型
+        allowNull: true,//是否允许为空
+        unique: false,//是否保持唯一性
+        comment: '用户头像'
+    },
     is_admin: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -33,6 +39,6 @@ const User = seq.define('INUS_user',{
 
 //同步数据库
 //force设置为true如果数据库中存在这种表则会强制删除使用我们模型创建的表
-//User.sync({ force:true })
+// User.sync({ force:true })
 
 module.exports = User
