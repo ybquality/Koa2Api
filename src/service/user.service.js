@@ -18,7 +18,7 @@ class UserService {
     };
 
     //查询封装
-    async getUerInfo({id, email, user_name, password, is_admin}){
+    async getUerInfo({id, email, user_name, password,avatar, is_admin}){
         const whereOpt = {}
 
         //当这个id存在就将id存入whereOpt ,如果不存在则不执行
@@ -26,10 +26,11 @@ class UserService {
         email && Object.assign(whereOpt, { email })
         user_name && Object.assign(whereOpt, { user_name })
         password && Object.assign(whereOpt, { password })
+        avatar && Object.assign(whereOpt, { avatar })
         is_admin && Object.assign(whereOpt, { is_admin })
 
         const res = await User.findOne({
-            attributes: ['id','email','user_name','password','is_admin'],//查询的列
+            attributes: ['id','email','user_name','password','avatar','is_admin'],//查询的列
             where: whereOpt //查询条件
         })
         //如果找到查询结果返回res.dataValues 否则返回null
@@ -37,13 +38,14 @@ class UserService {
     }
 
     //根据id对数据库操作的方法
-    async updateById({id,email,user_name,password,is_admin}){
+    async updateById({id,email,user_name,password,avatar,is_admin}){
         const whereOpt = {id}
         const newUser = {}
 
         email && Object.assign(newUser,{ email })
         user_name && Object.assign(newUser,{ user_name })
         password && Object.assign(newUser,{ password })
+        avatar && Object.assign(newUser,{ avatar })
         is_admin && Object.assign(newUser,{ is_admin })
 
         //修改方法，要修改的字段，查询条件

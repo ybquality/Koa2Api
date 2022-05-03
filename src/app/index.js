@@ -3,7 +3,8 @@ const path = require('path')
 
 const Koa = require('koa');
 const KoaBody = require('koa-body');
-const KoaStatic = require('koa-static');//静态资源管理
+const KoaStatic = require('koa-static');//图片/文件静态资源管理
+const parameter = require('koa-parameter');//校验模块
 
 //引入路由 ..详见router/index.js
 const router = require('../router')
@@ -24,6 +25,7 @@ app.use(KoaBody({
     },
 }))
 app.use(KoaStatic(path.join(__dirname,'../upload')))
+app.use(parameter(app))//校验中间件
 //注册路由 ..通过router/index.js实现路由自动注册
 app.use(router.routes()).use(router.allowedMethods())
 //.use(router.allowedMethods())

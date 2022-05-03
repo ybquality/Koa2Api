@@ -17,12 +17,12 @@ const auth = async (ctx, next) => {
         switch(err.name){
             case 'TokenExpiredError':
                 console.error('token已过期', err)
-                ctx.state = 403,
+                ctx.status = 401,
                 ctx.body = {message:'token失效'}
                 return
             case 'JsonWebTokenError':
                 console.error('无效的token',err)
-                ctx.state = 403,
+                ctx.status = 401,
                 ctx.body = {message:'token不合法'}
                 return
         }
@@ -38,7 +38,7 @@ const hadAdminPermission = async(ctx, next) => {
 
     if(!is_admin){
         console.error('非管理员用户操作',ctx.state.user)
-        ctx.state = 400,
+        ctx.status = 401,
         ctx.body = {message:'权限不足'}
         return
     }

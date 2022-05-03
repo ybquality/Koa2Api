@@ -40,6 +40,7 @@ class UserController {
             ctx.body = {
                 message: '登录成功',
                 result: {
+                    success: true,
                     //token携带的参数 传递的payload，密钥，过期时间
                     token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
                 }
@@ -48,6 +49,17 @@ class UserController {
             console.error('用户登录失败',err)
         }
 
+    }
+
+    //用户信息接口
+    async current(ctx, next){
+        ctx.body = {
+            id: ctx.state.user.id,
+            email: ctx.state.user.email,
+            user_name: ctx.state.user.user_name,
+            is_admin: ctx.state.user.is_admin,
+            avatar: ctx.state.user.avatar
+        }
     }
 
     async changePassword(ctx, next){

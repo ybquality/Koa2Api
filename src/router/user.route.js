@@ -4,7 +4,7 @@ const Router = require('koa-router');
 
 const { uservalidator,verifyUser,verifyUserName,cryptPassword,verifyLogin } = require('../middleware/user.middleware');//定义的中间件
 const { auth } = require('../middleware/auth.middleware');//用户认证中间件
-const { register, login, changePassword, changeUsername, updateAvatar } = require('../controller/user.controller');
+const { register, login, current, changePassword, changeUsername, updateAvatar } = require('../controller/user.controller');
 
 const router = new Router({prefix: '/users'});
 
@@ -22,6 +22,13 @@ router.post('/register', uservalidator, verifyUser,verifyUserName, cryptPassword
  * @access 公开
  */
 router.post('/login',verifyLogin, login)
+
+/**
+ * @route GET /users/current
+ * @desc 用户信息接口
+ * @access 公开
+ */
+ router.get('/current',auth, current)
 
 /**
  * @route PATCH /users/changePassword
